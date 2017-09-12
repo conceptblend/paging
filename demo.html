@@ -37,9 +37,7 @@
             font-size: 14px;
             margin: 0 1rem;
         }
-        table.paging td {
 
-        }
         table.paging a,
         table.paging span.ellipsis
         {
@@ -62,11 +60,21 @@
         table.paging span.ellipsis {
             border-color: #fff;
         }
-        
+
+        table.paging td {
+            vertical-align: top;
+        }
+
+        table.paging td.page {
+            text-align: center;
+            
+        }
+
         table.paging td.row-label {
             width:250px;
             text-align:right;
-            padding-right: 1em;
+            padding-right: 1rem;
+            padding-top: .5rem;
         }
         
         table.paging td.results-control {
@@ -97,6 +105,13 @@
             transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
             
             height: calc(1.75rem + 2px);
+        }
+        
+        span.hint {
+            color: #bbb;
+            display: inline-block;
+            font-size: .6rem;
+            text-transform: uppercase;
         }
         
     </style>
@@ -144,19 +159,25 @@
             tr.append("<td class='row-label'>Showing "+startIndex + " - " + endIndex + " of " + totalItems +"</td>");
             
             for (var p=1; p<=totalPages; p++) {
+                var hint = '';
+                if (p == currentPage - 1) {
+                    hint = 'Prev';
+                } else if (p == currentPage + 1) {
+                    hint = 'Next';
+                }
                 if (totalPages <= 9) {
                     // if there are 9 or fewer pages, just dump 'em straight out.
                     //str += makePageComponent(p==currentPage ? 'active' : 'default', p);
-                    tr.append(makePageComponent(p==currentPage ? 'active' : 'default', p));
+                    tr.append(makePageComponent(p==currentPage ? 'active' : 'default', p, hint));
                 } else {
                     // always show the first and the last page
                     if (p==1 || p==totalPages) {
                         //str += makePageComponent(p==currentPage ? 'active' : 'default', p);
-                        tr.append(makePageComponent(p==currentPage ? 'active' : 'default', p));
+                        tr.append(makePageComponent(p==currentPage ? 'active' : 'default', p, hint));
                     // standard +/- cases
                     } else if ((p >= low) && (p <= high)) {
                         //str += makePageComponent(p==currentPage ? 'active' : 'default', p);
-                        tr.append(makePageComponent(p==currentPage ? 'active' : 'default', p))
+                        tr.append(makePageComponent(p==currentPage ? 'active' : 'default', p, hint))
                     } else {
                         if (p == lowerBound || p == upperBound) {
                             //str += makePageComponent('ellipsis');
@@ -195,22 +216,22 @@
             $('#paging-controls').html(t);
         }
         
-        function makePageComponent (state, index) {
+        function makePageComponent (state, index, hint) {
             var retVal = "";
             switch (state) {
                 case 'active':
-                    retVal = "<a href='#' title='Page " + index +"' onclick='showPaging(" + index + ", g_totalItems, g_itemsPerPage); return false;' class='active'>" + index + "</a>";
+                    retVal = "<a href='#' title='Page " + index +"' onclick='showPaging(" + index + ", g_totalItems, g_itemsPerPage); return false;' class='active'>" + index + "</a><br/><span class='hint'>" + hint + "</span>";
                     break;
                 case 'ellipsis':
                     retVal = "<span class='ellipsis'>...</span>";
                     break;
                 case 'default':
-                    retVal = "<a href='#' title='Page " + index +"' onclick='showPaging(" + index + ", g_totalItems, g_itemsPerPage); return false;'>" + index + "</a>";
+                    retVal = "<a href='#' title='Page " + index +"' onclick='showPaging(" + index + ", g_totalItems, g_itemsPerPage); return false;'>" + index + "</a></br><span class='hint'>" + hint + "</span>";
                     break;
                 default:
                     retVal = "";
             }
-            return "<td>" + retVal + "</td>";
+            return "<td class='page'>" + retVal + "</td>";
         }
         
         // Globals
