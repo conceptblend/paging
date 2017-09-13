@@ -16,7 +16,7 @@
         }
         div.main-content {
             background-color: #fff;
-            margin: 4rem auto;
+            margin: 1rem auto 4rem;
             padding: 2rem 0;
             width: 960px;
         }
@@ -79,7 +79,7 @@
         }
 
         table.paging td {
-            //vertical-align: top;
+            /*vertical-align: top;*/
         }
 
         table.paging td.page {
@@ -174,6 +174,31 @@
             
             tr.append("<td width='99%'><label><strong>" + g_totalItems +"</strong> rules</label></td>");
             
+            //
+            //  Add the 'items per page' control
+            //
+            var options = "25,50,100,250,500".split(','),
+                s = $('<select class="form-control"></select>'),
+                td = $('<td class="results-control"></td>');
+            
+            for (var i=0, len=options.length; i<len; i++) {
+                if (options[i] == g_itemsPerPage) {
+                    s.append('<option value="'+options[i]+'" selected="selected">' + options[i] + ' per page</option>');
+                } else {
+                    s.append('<option value="'+options[i]+'">' + options[i] + ' per page</option>');
+                }
+            }
+            
+            $(s).change(function() {
+                var val = $("option:selected", this).val();
+                g_itemsPerPage = parseInt(val);
+                updateView(1);
+            });
+
+            tr.append(td.append(s));
+            tr.append("<td><label>&middot;</label></td>");
+
+            
             //tr.append("<td class='row-label'>Showing "+ range.start + " - " + range.end + " of " + g_totalItems +"</td>");
             
             for (var p=1; p<=totalPages; p++) {
@@ -210,30 +235,6 @@
             tr.append(makePageComponent('prev', currentPage > 1 ? currentPage-1 : currentPage));
             tr.append(makePageComponent('next', currentPage < totalPages ? currentPage+1 : currentPage));
             
-            //
-            //  Add the 'items per page' control
-            //
-            var options = "25,50,100,250,500".split(','),
-                s = $('<select class="form-control"></select>'),
-                td = $('<td class="results-control"></td>');
-            
-            for (var i=0, len=options.length; i<len; i++) {
-                if (options[i] == g_itemsPerPage) {
-                    s.append('<option value="'+options[i]+'" selected="selected">' + options[i] + ' per page</option>');
-                } else {
-                    s.append('<option value="'+options[i]+'">' + options[i] + ' per page</option>');
-                }
-            }
-            
-            $(s).change(function() {
-                var val = $("option:selected", this).val();
-                g_itemsPerPage = parseInt(val);
-                updateView(1);
-            });
-            
-            tr.append("<td><label>&middot;</label></td>");
-            tr.append(td.append(s));
-
             //
             //  Add the row to the table and replace the contents in the page
             //
@@ -358,9 +359,9 @@
 </head>
 
 <body>
+    <a name="top" id="top"></a>
     <div class="main-content">
         <div class="tabular-list">
-            <a name="top" id="top"></a>
             <table id="data-table" width="100%"><!-- table data goes here! --></table>
         </div>
         <div id="paging-controls" class="clearfix"><!-- Placeholder for rendering paging controls --></div>
