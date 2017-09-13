@@ -79,7 +79,7 @@
         }
 
         table.paging td {
-            //vertical-align: top;
+            vertical-align: top;
         }
 
         table.paging td.page {
@@ -98,13 +98,13 @@
             white-space: nowrap;
         }
         
-        table.paging label {
+        table.paging td.results-control span {
             padding: 0 1rem;
         }
 
         table.paging select {
             display: inline-block;
-            width: 8rem;
+            width: 4rem;
             padding: .5rem .75rem;
             font-size: 14px;
             line-height: 1.25;
@@ -138,7 +138,7 @@
             var totalPages =  Math.floor(g_totalItems/g_itemsPerPage)+1,
                 range = getRangeForPage(currentPage, g_itemsPerPage),
                 // Calculate the core body of set
-                itemsOnEitherSide = 1,
+                itemsOnEitherSide = 2,
                 low = currentPage - itemsOnEitherSide,
                 high = currentPage + itemsOnEitherSide,
                 lowerBound = 2, // index_of_first_page (1) + 1
@@ -172,19 +172,15 @@
             //
             t.addClass('paging');
             
-            tr.append("<td width='99%'><label><strong>" + g_totalItems +"</strong> rules</label></td>");
-            
-            //tr.append("<td class='row-label'>Showing "+ range.start + " - " + range.end + " of " + g_totalItems +"</td>");
+            tr.append("<td class='row-label'>Showing "+ range.start + " - " + range.end + " of " + g_totalItems +"</td>");
             
             for (var p=1; p<=totalPages; p++) {
                 var hint = '';
-                /*
                 if (p == currentPage - 1) {
                     hint = 'Prev';
                 } else if (p == currentPage + 1) {
                     hint = 'Next';
                 }
-                */
                 if (totalPages <= 9) {
                     // if there are 9 or fewer pages, just dump 'em straight out.
                     //str += makePageComponent(p==currentPage ? 'active' : 'default', p);
@@ -206,22 +202,18 @@
                     }
                 }
             }
-
-            tr.append(makePageComponent('prev', currentPage > 1 ? currentPage-1 : currentPage));
-            tr.append(makePageComponent('next', currentPage < totalPages ? currentPage+1 : currentPage));
-            
             //
             //  Add the 'items per page' control
             //
             var options = "25,50,100,250,500".split(','),
                 s = $('<select class="form-control"></select>'),
-                td = $('<td class="results-control"></td>');
+                td = $('<td class="results-control"><span>Rules per page</span></td>');
             
             for (var i=0, len=options.length; i<len; i++) {
                 if (options[i] == g_itemsPerPage) {
-                    s.append('<option value="'+options[i]+'" selected="selected">' + options[i] + ' per page</option>');
+                    s.append('<option value="'+options[i]+'" selected="selected">' + options[i] + '</option>');
                 } else {
-                    s.append('<option value="'+options[i]+'">' + options[i] + ' per page</option>');
+                    s.append('<option value="'+options[i]+'">' + options[i] + '</option>');
                 }
             }
             
@@ -231,9 +223,8 @@
                 updateView(1);
             });
             
-            tr.append("<td><label>&middot;</label></td>");
             tr.append(td.append(s));
-
+            
             //
             //  Add the row to the table and replace the contents in the page
             //
@@ -245,28 +236,17 @@
             var retVal = "";
             switch (state) {
                 case 'active':
-                    retVal = "<a href='#top' title='Page " + index +"' onclick='updateView(" + index + ");' class='active'>" + index + "</a>";
+                    retVal = "<a href='#' title='Page " + index +"' onclick='updateView(" + index + "); return false;' class='active'>" + index + "</a><br/><span class='hint'>" + hint + "</span>";
                     break;
                 case 'ellipsis':
                     retVal = "<span class='ellipsis'>...</span>";
                     break;
                 case 'default':
-                    retVal = "<a href='#top' title='Page " + index +"' onclick='updateView(" + index + ");'>" + index + "</a>";
+                    retVal = "<a href='#' title='Page " + index +"' onclick='updateView(" + index + "); return false;'>" + index + "</a></br><span class='hint'>" + hint + "</span>";
                     break;
-                case 'next':
-                    retVal = "<a href='#top' title='Page " + index +"' onclick='updateView(" + index + ");'>&rarr;</a>";
-                    break;
-                case 'prev':
-                    retVal = "<a href='#top' title='Page " + index +"' onclick='updateView(" + index + ");'>&larr;</a>";
-                    break;
-
                 default:
                     retVal = "";
             }
-            if (hint && hint.length > 0) {
-                retVal += "<br/><span class='hint'>" + hint + "</span>";
-            }
-
             return "<td class='page'>" + retVal + "</td>";
         }
         
@@ -360,7 +340,6 @@
 <body>
     <div class="main-content">
         <div class="tabular-list">
-            <a name="top" id="top"></a>
             <table id="data-table" width="100%"><!-- table data goes here! --></table>
         </div>
         <div id="paging-controls" class="clearfix"><!-- Placeholder for rendering paging controls --></div>
