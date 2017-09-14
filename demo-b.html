@@ -138,7 +138,7 @@
             var totalPages =  Math.floor(g_totalItems/g_itemsPerPage)+1,
                 range = getRangeForPage(currentPage, g_itemsPerPage),
                 // Calculate the core body of set
-                itemsOnEitherSide = 1,
+                itemsOnEitherSide = 2,
                 low = currentPage - itemsOnEitherSide,
                 high = currentPage + itemsOnEitherSide,
                 lowerBound = 2, // index_of_first_page (1) + 1
@@ -177,7 +177,7 @@
             //
             //  Add the 'items per page' control
             //
-            var options = "25,50,100,250,500".split(','),
+            var options = "50,100,250,500".split(','),
                 s = $('<select class="form-control"></select>'),
                 td = $('<td class="results-control"></td>');
             
@@ -203,13 +203,6 @@
             
             for (var p=1; p<=totalPages; p++) {
                 var hint = '';
-                /*
-                if (p == currentPage - 1) {
-                    hint = 'Prev';
-                } else if (p == currentPage + 1) {
-                    hint = 'Next';
-                }
-                */
                 if (totalPages <= 9) {
                     // if there are 9 or fewer pages, just dump 'em straight out.
                     //str += makePageComponent(p==currentPage ? 'active' : 'default', p);
@@ -232,8 +225,8 @@
                 }
             }
 
-            tr.append(makePageComponent('prev', currentPage > 1 ? currentPage-1 : currentPage));
-            tr.append(makePageComponent('next', currentPage < totalPages ? currentPage+1 : currentPage));
+            //tr.append(makePageComponent('prev', currentPage > 1 ? currentPage-1 : currentPage));
+            //tr.append(makePageComponent('next', currentPage < totalPages ? currentPage+1 : currentPage));
             
             //
             //  Add the row to the table and replace the contents in the page
@@ -381,7 +374,7 @@
         
         // Globals
         var g_totalItems = 462,
-            g_itemsPerPage = 25,
+            g_itemsPerPage = 50,
             g_rules = buildRules(g_totalItems),
             g_ASC = 1,
             g_DESC = -1,
@@ -405,7 +398,7 @@
 <body>
     <a name="top" id="top"></a>
     <div class="main-content">
-        <h2>// Variant A</h2>
+        <h2>// Variant B</h2>
         <div class="tabular-list">
             <table id="data-table" width="100%"><!-- table data goes here! --></table>
         </div>
